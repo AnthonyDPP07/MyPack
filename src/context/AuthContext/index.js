@@ -1,35 +1,12 @@
-import axios from "axios";
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useContext } from "react";
 import useInputValue from "../../hooks/useInputValue";
 // import axiosClient from "./../../config/axios";
 
 export const AuthContext = createContext(null);
 
-const URL_API = `https://courierdemo.azurewebsites.net/api/membership/login`;
-
 export const AuthContextProvider = ({ children }) => {
   const username = useInputValue("", "text", "Username");
   const password = useInputValue("", "password", "Password");
-
-  const authLogin = async () => {
-    try {
-      const _username = username.value;
-      const _password = password.value;
-
-      console.log(_username);
-      console.log(_password);
-      const result = await axios.post(URL_API, {
-        payload: {
-          username: _username,
-          password: _password,
-        },
-      });
-
-      console.log(result);
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   // const values = { users, setUsers };
   //
@@ -37,9 +14,8 @@ export const AuthContextProvider = ({ children }) => {
     () => ({
       username,
       password,
-      authLogin,
     }),
-    [username, password, authLogin]
+    [username, password]
   );
 
   // Finally, return the interface that we want to expose to our other components

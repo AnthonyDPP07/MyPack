@@ -5,6 +5,7 @@ import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import AuthContextProvider from "./context/AuthContext";
+import cors from "cors";
 
 ReactDOM.render(
   <React.StrictMode>

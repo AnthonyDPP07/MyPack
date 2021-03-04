@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -34,48 +34,22 @@ const useStyles = makeStyles({
   },
 });
 
-function createData(
-  tranckIn,
-  trackOut,
-  description,
-  weight,
-  price,
-  supplier,
-  courier
-) {
-  return { tranckIn, trackOut, description, weight, price, supplier, courier };
-}
-
-const rows = [
-  createData(
-    "NX-U123456789",
-    "USPS123456789",
-    "Television 32 pulgadas",
-    30.0,
-    2154.2,
-    "Amazon",
-    "USPS"
-  ),
-  createData(
-    "NX-F123456789",
-    "Fedex123456789",
-    "Iphone XS",
-    1.3,
-    1432.1,
-    "Apple",
-    "Fedex"
-  ),
-];
-
 const Packages = () => {
+  const [data, setData] = useState([]);
   const URL_API =
     "https://courierdemo.azurewebsites.net/api/packages/getPending?username={jsanchez}";
 
-  const apiRes = async () => {
-    const response = await axios.get(URL_API);
+  useEffect(() => {
+    const apiRes = async () => {
+      const response = await axios.get(URL_API);
 
-    console.log(response);
-  };
+      const datas = response.data.responseObject;
+
+      setData(datas);
+    };
+
+    apiRes();
+  }, []);
 
   const classes = useStyles();
 
@@ -100,15 +74,21 @@ const Packages = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.tranckIn}>
-                <StyledTableCell align="center">{row.tranckIn}</StyledTableCell>
-                <StyledTableCell align="center">{row.trackOut}</StyledTableCell>
+            {data.map((row, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell align="center">
+                  {row.internalTracking}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.courierTracking}
+                </StyledTableCell>
                 <StyledTableCell align="center">
                   {row.description}
                 </StyledTableCell>
                 <StyledTableCell align="center">{row.weight}</StyledTableCell>
-                <StyledTableCell align="center">{row.price}</StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.priceToPay}
+                </StyledTableCell>
                 <StyledTableCell align="center">{row.supplier}</StyledTableCell>
                 <StyledTableCell align="center">{row.courier}</StyledTableCell>
               </StyledTableRow>

@@ -1,22 +1,50 @@
-import React, { useState, useContext } from "react";
+import React from "react";
+import axios from "axios";
 import { useAuthContext } from "./../context/AuthContext";
 import { useHistory } from "react-router-dom";
-import useInputValue from "./../hooks/useInputValue";
-import Error from "./Error";
 
 const Login = () => {
   const history = useHistory();
 
-  const { username, password, authLogin } = useAuthContext();
+  const { username, password } = useAuthContext();
 
-  const { error } = useInputValue();
+  const URL_API = `https://courierdemo.azurewebsites.net/api/membership/login`;
 
-  console.log(error);
+  const authLogin = async () => {
+    const _username = username.value;
+    const _password = password.value;
 
-  const handleLogin = async (e) => {
+    console.log(_username);
+    console.log(_password);
+
+    axios.defaults.headers.post["Content-Type"] =
+      "application/x-www-form-urlencoded";
+    var data = JSON.stringify({
+      username: "jsanchez",
+      password: "123456",
+    });
+    var config = {
+      method: "post",
+      url: "https://courierdemo.azurewebsites.net/api/membership/login",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const handleLogin = (e) => {
     e.preventDefault();
 
-    const response = await authLogin();
+    const response = authLogin();
 
     console.log(response);
 
@@ -24,7 +52,7 @@ const Login = () => {
 
     // here you will be routed to the next page.
     // if (response.autenticaed) {
-    // history.push("/packages");
+    history.push("/packages");
     // }
   };
 
@@ -33,9 +61,9 @@ const Login = () => {
       <div className="form-container dark-shadow">
         <h2>LogIn</h2>
         <form>
-          {error ? (
+          {/* {error ? (
             <Error mensaje="Ambos campos son obligatorios o presupuesto incorrecto" />
-          ) : null}
+          ) : null} */}
           <div className="field">
             <label>User</label>
             <input id="userName" name="userName" {...username} />
